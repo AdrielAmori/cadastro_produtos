@@ -1,37 +1,37 @@
 class Produto {
-    constructor () {
+    constructor() {
         this.id = 1;
-        this.arrayProdutos= [];
+        this.arrayProdutos = [];
 
     }
-    Adicionar () {
-        let produto = this.LerDados() 
-        if (this.Validar(produto)== true){
+    Adicionar() {
+        let produto = this.LerDados()
+        if (this.Validar(produto) == true) {
             this.Salvar(produto)
         }
         this.Listar()
-        
+
     }
-    LerDados(){
-        let produto ={}
-        
+    LerDados() {
+        let produto = {}
+
         produto.id = this.id
         produto.nomeProduto = document.getElementById('pdnome').value
         produto.precoProduto = document.getElementById('pdpreco').value
 
         return produto
-        }  
+    }
 
     Validar(produto) {
         let msg = '';
 
         if (produto.nomeProduto == '') {
             msg += 'Por favor, insira corretamente o nome do produto! \n'
-        } 
+        }
         if (produto.precoProduto == '') {
             msg += 'Por favor, insira corretamente o preço do produto! \n'
         }
-        if (msg != ''){
+        if (msg != '') {
             alert(msg)
             return false
         }
@@ -64,10 +64,11 @@ class Produto {
     
             let imagem = document.createElement('img')
             imagem.src = 'delete.png'
-            imagem.onclick = function() {
-                // Usar a referência ao objeto Produto aqui
-                self.Deletar(self.arrayProdutos[i].id);
-            }
+            imagem.onclick = (function(id) {
+                return function() {
+                    self.Deletar(id);
+                }
+            })(this.arrayProdutos[i].id);
             td_del.appendChild(imagem)
     
             td_id.classList.add("centralizado");
@@ -75,25 +76,33 @@ class Produto {
             td_preco.classList.add("centralizado");
             td_del.classList.add("centralizado");
         }
-    }      
+    }
 
-    Cancelar (){
+    Cancelar() {
         document.getElementById('pdnome').value = ''
-        document.getElementById('pdpreco').value = ''      
+        document.getElementById('pdpreco').value = ''
     }
 
 
-    //consertar a funcao pois nao esta deletando
-    Deletar (id) {
+    Deletar(id) {
         let tbody = document.querySelector('.tbody')
-        for (let i = 0; i < this.arrayProdutos.length; i++ ) {
-            if(this.arrayProdutos[i].id == id) {
-                this.arrayProdutos.splice(i, 1)
-                tbody.deleteRow(i)
-            }
+    
+        // Encontre o índice do produto com o id correspondente
+        let index = this.arrayProdutos.findIndex(produto => produto.id == id);
+        
+        if (index > -1) {
+            // Remova o produto do array
+            this.arrayProdutos.splice(index, 1);
+            
+            // Remova a linha correspondente da tabela
+            tbody.deleteRow(index);
+        } else {
+            console.error('Produto não encontrado: ', id);
         }
     }
     
+
+
 
 }
 
